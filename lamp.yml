@@ -1,0 +1,111 @@
+#lamp -> amazon linux-> 
+#httpd, mariadb105-server , mariadb, php, php-fpm 
+---
+- name: install lamp in amazon linux
+  hosts: localhost
+  become: yes
+  tasks: 
+  # install httpd
+  - name: install httpd package
+    ansible.builtin.dnf:
+      name: httpd
+      state: present 
+  # install mariadb
+  - name: install mariadb package
+    ansible.builtin.dnf:
+      name: mariadb105-server
+      state: present 
+  # install php
+  - name: install php package
+    ansible.builtin.dnf:
+      name: 
+       - php
+       - php-fpm
+      state: present 
+  # start httpd
+  - name: start and enable httpd
+    ansible.builtin.systemd_service:
+      name: httpd
+      state: started 
+      enabled: true
+  # start mariadb
+  - name: start and enable mariadb
+    ansible.builtin.systemd_service:
+      name: mariadb
+      state: started
+      enabled: true
+  # start php
+  - name: start and enable php
+    ansible.builtin.systemd_service:
+      name: php-fpm
+      state: started
+      enabled: true 
+  # deploy php 
+  - name: deploy php
+    ansible.builtin.copy:
+      dest: /var/www/html/index.php
+      content: |
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>LAMP Stack Deployment</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background: linear-gradient(120deg, #f8bbd0, #fce4ec);
+                }
+                .box {
+                    width: 600px;
+                    margin: 80px auto;
+                    background: white;
+                    padding: 25px;
+                    border-radius: 15px;
+                    box-shadow: 0 0 18px rgba(233, 30, 99, 0.4);
+                    border-top: 6px solid #e91e63;
+                }
+                h2 {
+                    text-align: center;
+                    color: #c2185b;
+                }
+                .status {
+                    margin-top: 20px;
+                    line-height: 1.8;
+                }
+                .footer {
+                    text-align: center;
+                    margin-top: 22px;
+                    font-size: 13px;
+                    color: #ad1457;
+                }
+            </style>
+        </head>
+        <body>
+
+        <div class="box">
+            <h2> LAMP STACK SUCCESSFULLY DEPLOYED</h2>
+
+            <div class="status">
+                <b>Apache Web Server:</b> Running <br>
+                <b>MariaDB Database:</b> Running <br>
+                <b>PHP Version:</b> <?php echo phpversion(); ?> <br><br>
+
+                <b>Server Hostname:</b> <?php echo gethostname(); ?> <br>
+                <b>Server IP:</b> <?php echo $_SERVER['SERVER_ADDR']; ?> <br>
+                <b>Date & Time:</b> <?php echo date("Y-m-d H:i:s"); ?>
+            </div>
+
+            <div class="footer">
+                Deployed using Ansible on Amazon Linux <br>
+                Project by <b>VEDIKA KADAM</b>
+            </div>
+        </div>
+
+        </body>
+        </html>
+
+    
+    
+    
+    
+    
+    
